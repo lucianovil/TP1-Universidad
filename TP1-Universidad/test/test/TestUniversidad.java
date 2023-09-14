@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import src.Alumno;
 import src.Materia;
 import src.Universidad;
 
@@ -19,8 +20,23 @@ public class TestUniversidad {
 		
 		assertTrue(unlam.agregarMateria(pb1));
 		
-		String lala;
-		String lala2;
+	}
+	
+	@Test 
+	public void queSePuedaAgregarUnAlumnoEnLaUniversidad() {
+		String nombreUni = "Unlam";
+		Universidad unlam = new Universidad(nombreUni);
+		
+		Integer idAlumno = 1;
+		String nombreAlumno = "Lucho";
+		String apellidoAlumno = "Vilan";
+		String fechaNacimiento = "22/03/1995";
+		String fechaIngreso = "01/04/2022";
+		
+		Alumno alumnoPrueba = new Alumno(idAlumno,nombreAlumno,apellidoAlumno,fechaNacimiento,fechaIngreso);
+		
+		assertTrue(unlam.registrarAlumno(alumnoPrueba));
+		
 	}
 	
 	
