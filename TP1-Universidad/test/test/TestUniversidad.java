@@ -20,6 +20,7 @@ public class TestUniversidad {
 		assertTrue(unlam.agregarMateria(pb1));
 		
 		String lala;
+		String lala2;
 	}
 	
 	
