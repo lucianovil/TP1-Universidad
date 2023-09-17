@@ -43,18 +43,52 @@ public class TestUniversidad {
 		String nombreUni = "Unlam";
 		Universidad unlam = new Universidad(nombreUni);
 		
-		Integer idAlumno = 1;
+		Integer dni= 39415111;
 		String nombreAlumno = "Lucho";
 		String apellidoAlumno = "Vilan";
 		String fechaNacimiento = "22/03/1995";
 		String fechaIngreso = "01/04/2022";
 		
-		Alumno alumnoPrueba = new Alumno(idAlumno,nombreAlumno,apellidoAlumno,fechaNacimiento,fechaIngreso);
+		Alumno alumnoPrueba = new Alumno(dni,nombreAlumno,apellidoAlumno,fechaNacimiento,fechaIngreso);
 		
 		assertTrue(unlam.registrarAlumno(alumnoPrueba));
 		
 	}
 	
-	
+	@Test 
+	public void queNoSePuedaAgregarUnAlumnoEnLaUniversidadConMismoDni() {
+		String nombreUni = "Unlam";
+		Universidad unlam = new Universidad(nombreUni);
+		
+		
+		String nombreAlumno = "Lucho";
+		String apellidoAlumno = "Vilan";
+		String fechaNacimiento = "22/03/1995";
+		String fechaIngreso = "01/04/2022";
+		Integer dni= 39415111;
+		
+		
+		String nombreAlumnoDos = "Jose";
+		String apellidoAlumnoDos = "Velez";
+		String fechaNacimientoDos = "22/03/1994";
+		String fechaIngresoDos = "05/04/2022";
+		Integer dniDos= 39415111;
+		
+		
+		Alumno alumnoPrueba = new Alumno(dni,nombreAlumno,apellidoAlumno,fechaNacimiento,fechaIngreso);
+		Alumno alumnoPruebaDos = new Alumno(dniDos,nombreAlumnoDos,apellidoAlumnoDos,fechaNacimientoDos,fechaIngresoDos);
+		
+		unlam.registrarAlumno(alumnoPrueba);
+		assertFalse(unlam.registrarAlumno(alumnoPruebaDos));
+		
+	}
 
-}
+
+
+	}
+
+
+
+
+
+
