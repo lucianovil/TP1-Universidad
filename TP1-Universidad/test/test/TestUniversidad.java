@@ -22,6 +22,22 @@ public class TestUniversidad {
 		
 	}
 	
+	@Test
+	public void queNoSePuedaAgregarUnaMateriaAUnaUniversidadConMismoID() {
+		String nombreUni = "Unlam";
+		Universidad unlam = new Universidad(nombreUni);
+		Integer idMateria = 1;
+		String nombreMateria = "PB1";
+		Materia pb1 = new Materia (idMateria, nombreMateria);
+		Integer idMateria2 = 1;
+		String nombreMateria2 = "PB2";
+		Materia pb2 = new Materia (idMateria2, nombreMateria2);
+		
+		assertTrue(unlam.agregarMateria(pb1));
+		assertFalse(unlam.agregarMateria(pb2));
+		
+	}
+	
 	@Test 
 	public void queSePuedaAgregarUnAlumnoEnLaUniversidad() {
 		String nombreUni = "Unlam";

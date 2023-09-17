@@ -15,7 +15,20 @@ public class Universidad {
 	}
 
 	public Boolean agregarMateria(Materia materiaAAgregar) {
+		if(buscarMateriaPorID(materiaAAgregar.getId()) == null) {
 		return materias.add(materiaAAgregar);
+		}
+		return false;
+	}
+	
+	public Materia buscarMateriaPorID(Integer iDMateria) {
+		for (int i=0; i<materias.size(); i++) {
+			if (this.materias.get(i).getId().equals(iDMateria)) {
+				return this.materias.get(i);
+			}
+		}
+		return null;
+		
 	}
 
 	public String getNombre() {
