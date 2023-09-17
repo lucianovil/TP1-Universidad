@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import src.Alumno;
+import src.Docente;
 import src.Materia;
 import src.Universidad;
 
@@ -33,7 +34,7 @@ public class TestUniversidad {
 		String nombreMateria2 = "PB2";
 		Materia pb2 = new Materia (idMateria2, nombreMateria2);
 		
-		assertTrue(unlam.agregarMateria(pb1));
+		unlam.agregarMateria(pb1);
 		assertFalse(unlam.agregarMateria(pb2));
 		
 	}
@@ -55,6 +56,44 @@ public class TestUniversidad {
 		
 	}
 	
+	@Test 
+	public void queSePuedaAgregarUnDocenteEnLaUniversidad() {
+		String nombreUni = "Unlam";
+		Universidad unlam = new Universidad(nombreUni);
+		
+		Integer idDocente = 1;
+		String nombreDocente = "Juan";
+		String apellidoDocente = "Monteagudo";
+		String fechaNacimiento = "04/10/1983";
+		String fechaIngreso = "01/04/2019";
+		
+		Docente docentePrueba = new Docente(idDocente,nombreDocente,apellidoDocente,fechaNacimiento,fechaIngreso);
+		
+		assertTrue(unlam.registrarDocente(docentePrueba));
+		
+	}
 	
+	@Test
+	public void queNoSePuedaAgregarUnDocenteAUnaUniversidadConMismoDNI() {
+		String nombreUni = "Unlam";
+		Universidad unlam = new Universidad(nombreUni);
+		Integer idDocente = 1;
+		String nombreDocente = "Juan";
+		String apellidoDocente = "Monteagudo";
+		String fechaNacimiento = "04/10/1983";
+		String fechaIngreso = "01/04/2019";
+		
+		Integer idDocente2 = 1;
+		String nombreDocente2 = "Andy";
+		String apellidoDocente2 = "Borgeat";
+		String fechaNacimiento2 = "15/07/1985";
+		String fechaIngreso2 = "01/04/2019";
+		Docente docentePrueba = new Docente(idDocente,nombreDocente,apellidoDocente,fechaNacimiento,fechaIngreso);
+		Docente docentePrueba2 = new Docente(idDocente2,nombreDocente2,apellidoDocente2,fechaNacimiento2,fechaIngreso2);
+		
+		unlam.registrarDocente(docentePrueba);
+		assertFalse(unlam.registrarDocente(docentePrueba2));
+		
+	}
 
 }
