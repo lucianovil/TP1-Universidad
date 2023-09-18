@@ -50,12 +50,29 @@ public class Universidad {
 	}
 
 	public Boolean registrarAlumno(Alumno alumnoARegistrar) {
-		
-		return alumnos.add(alumnoARegistrar);
-	
-		
+		boolean sePudoAgregarAlumno = false;
+
+		if (!existeAlumno(alumnoARegistrar)) {
+
+			alumnos.add(alumnoARegistrar);
+			sePudoAgregarAlumno = true;
+		}
+
+		return sePudoAgregarAlumno;
+
 	}
 
+	public Boolean existeAlumno(Alumno alumnoIngresado) {
+		boolean existe = false;
+		int indice = 0;
+		while (indice < alumnos.size() && !existe) {
+			if (alumnos.get(indice).getDni().equals(alumnoIngresado.getDni())) {
+				existe = true;
+			}
+			indice++;
+		}
+		return existe;
+	}
 	public ArrayList<Alumno> getAlumnos() {
 		return alumnos;
 	}
