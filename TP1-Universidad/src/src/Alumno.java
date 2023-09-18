@@ -7,7 +7,6 @@ public class Alumno {
 	private String apellido;
 	private String fechaNacimiento;
 	private String fechaIngreso;
-	
 
 	public Alumno(Integer dni, String nombreAlumno, String apellidoAlumno, String fechaNacimiento,
 			String fechaIngreso) {
@@ -17,11 +16,8 @@ public class Alumno {
 		this.apellido = apellidoAlumno;
 		this.fechaNacimiento = fechaNacimiento;
 		this.fechaIngreso = fechaIngreso;
-		
-		
+			
 	}
-
-
 
 	public Integer getDni() {
 		return dni;
