@@ -2,16 +2,16 @@ package src;
 
 public class Alumno {
 
-	private Integer id;
+	private Integer dni;
 	private String nombre;
 	private String apellido;
 	private String fechaNacimiento;
 	private String fechaIngreso;
 
-	public Alumno(Integer idAlumno, String nombreAlumno, String apellidoAlumno, String fechaNacimiento,
+	public Alumno(Integer dni, String nombreAlumno, String apellidoAlumno, String fechaNacimiento,
 			String fechaIngreso) {
 		
-		this.id = idAlumno;
+		this.dni = dni;
 		this.nombre = nombreAlumno;
 		this.apellido = apellidoAlumno;
 		this.fechaNacimiento = fechaNacimiento;
@@ -19,12 +19,14 @@ public class Alumno {
 		
 	}
 
-	public Integer getId() {
-		return id;
+	public Integer getDni() {
+		return dni;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+
+
+	public void setDni(Integer dni) {
+		this.dni = dni;
 	}
 
 	public String getNombre() {
