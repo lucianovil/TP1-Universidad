@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import src.Alumno;
+import src.Aula;
 import src.CicloLectivo;
 import src.Comision;
 import src.Docente;
@@ -299,7 +300,8 @@ public class TestUniversidad {
 		String nombreMateria2 = "PB2";
 		Materia pb2 = new Materia(idMateria2, nombreMateria2);
 		unlam.agregarMateria(pb2);
-		assertTrue(pb2.agregarCorrelativa(pb1));
+
+		assertTrue(unlam.agregarCorrelativa(pb2, pb1));
 
 	}
 
@@ -316,8 +318,44 @@ public class TestUniversidad {
 		String nombreMateria2 = "PB2";
 		Materia pb2 = new Materia(idMateria2, nombreMateria2);
 		unlam.agregarMateria(pb2);
-		pb2.agregarCorrelativa(pb1);
-		assertTrue(pb2.eliminarCorrelativa(pb1));
+		unlam.agregarCorrelativa(pb2, pb1);
+		assertTrue(unlam.eliminarCorrelativa(pb2, pb1));
+
+	}
+
+	@Test  // cambiamos un poco la logica para que se puedan registrar 2 o mas
+	public void queSePuedaRegistrarDosAulasEnLaUniversidad() { 
+		String nombreUni = "Unlam";
+		Universidad unlam = new Universidad(nombreUni);
+		Integer numeroAula = 1;
+		Integer numeroAula2 = 2;
+		Aula aula1 = new Aula(numeroAula);
+		Aula aula2 = new Aula(numeroAula2);
+		unlam.registrarAula(aula1);
+		unlam.registrarAula(aula2);
+		Integer valorEsperado = 2;
+		Integer valorObtenido = unlam.getAulas().size();
+		assertEquals(valorEsperado, valorObtenido);
+	}
+
+	@Test
+	public void queSePuedaAsignarAulaALaComision() {
+		String nombreUni = "Unlam";
+		Universidad unlam = new Universidad(nombreUni);
+
+		Integer id = 1;
+		Materia pb1 = new Materia(1, "pb1");
+		CicloLectivo UnoC2023 = new CicloLectivo(1, "2023-03-04", "2023-07-06", "2023-03-03");
+		Turno TipoDeTurno = Turno.MAÑANA;
+
+		Comision comision1 = new Comision(id, pb1, UnoC2023, TipoDeTurno);
+		unlam.agregarComision(comision1);
+		Docente docentePrueba = new Docente(1, "Juan", "Monteagudo", "1983-10-04", "2019-04-01");
+		unlam.registrarDocente(docentePrueba);
+		Integer numeroAula = 1;
+		Aula aula1 = new Aula(numeroAula);
+		unlam.registrarAula(aula1);
+		assertTrue(unlam.asignarAulaAlaComision(comision1, docentePrueba));
 
 	}
 

@@ -8,6 +8,7 @@ public class Comision {
 	private CicloLectivo cicloLectivo;
 	private Materia materia;
 	private Turno tipoDeTurno;
+	private Aula aulaAsignada;
 	private ArrayList<Alumno> alumnos;
 	private ArrayList<Docente> docentes;
 
@@ -16,6 +17,7 @@ public class Comision {
 		this.materia = materia;
 		this.cicloLectivo = cicloLectivo;
 		this.tipoDeTurno = tipoDeTurno;
+		this.aulaAsignada=null;
 		this.alumnos = new ArrayList<Alumno>();
 		this.docentes = new ArrayList<Docente>();
 	}
@@ -68,21 +70,14 @@ public class Comision {
 		this.docentes = docentes;
 	}
 
-	public Boolean asignarDocenteAComision(Docente docenteAAgregar) {
-		if (buscarDocente(docenteAAgregar) == null) {
-			return docentes.add(docenteAAgregar);
-		}
-		return false;
+	public Aula getAulaAsignada() {
+		return aulaAsignada;
 	}
 
-	public Docente buscarDocente(Docente DocenteAIngresar) {
-		for (int i = 0; i < docentes.size(); i++) {
-			if (this.docentes.contains(DocenteAIngresar)) {
-				return this.docentes.get(i);
-			}
-		}
-		return null;
-
+	public void setAulaAsignada(Aula aulaAsignada) {
+		this.aulaAsignada = aulaAsignada;
 	}
 
+	
+	
 }

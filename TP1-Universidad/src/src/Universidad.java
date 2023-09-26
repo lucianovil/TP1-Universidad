@@ -10,6 +10,8 @@ public class Universidad {
 	private ArrayList<Docente> docentes;
 	private ArrayList<CicloLectivo> ciclosLectivos;
 	private ArrayList<Comision> comisiones;
+	private ArrayList<Materia> materiasCorrelativas;
+	private ArrayList<Aula> aulas;
 
 	public Universidad(String nombreUni) {
 		this.nombre = nombreUni;
@@ -18,6 +20,64 @@ public class Universidad {
 		this.docentes = new ArrayList<Docente>();
 		this.ciclosLectivos = new ArrayList<CicloLectivo>();
 		this.comisiones = new ArrayList<Comision>();
+		this.materiasCorrelativas = new ArrayList<Materia>();
+		this.aulas = new ArrayList<Aula>();
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public ArrayList<Materia> getMaterias() {
+		return materias;
+	}
+
+	public void setMaterias(ArrayList<Materia> materias) {
+		this.materias = materias;
+	}
+
+	public ArrayList<Alumno> getAlumnos() {
+		return alumnos;
+	}
+
+	public void setAlumnos(ArrayList<Alumno> alumnos) {
+		this.alumnos = alumnos;
+	}
+
+	public ArrayList<Docente> getDocentes() {
+		return docentes;
+	}
+
+	public void setDocentes(ArrayList<Docente> docentes) {
+		this.docentes = docentes;
+	}
+
+	public ArrayList<CicloLectivo> getCiclosLectivos() {
+		return ciclosLectivos;
+	}
+
+	public void setCiclosLectivos(ArrayList<CicloLectivo> ciclosLectivos) {
+		this.ciclosLectivos = ciclosLectivos;
+	}
+
+	public ArrayList<Comision> getComisiones() {
+		return comisiones;
+	}
+
+	public void setComisiones(ArrayList<Comision> comisiones) {
+		this.comisiones = comisiones;
+	}
+
+	public ArrayList<Aula> getAulas() {
+		return aulas;
+	}
+
+	public void setAulas(ArrayList<Aula> aulas) {
+		this.aulas = aulas;
 	}
 
 	public Boolean agregarMateria(Materia materiaAAgregar) {
@@ -35,22 +95,6 @@ public class Universidad {
 		}
 		return null;
 
-	}
-
-	public String getNombre() {
-		return nombre;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
-
-	public ArrayList<Materia> getMaterias() {
-		return materias;
-	}
-
-	public void setMaterias(ArrayList<Materia> materias) {
-		this.materias = materias;
 	}
 
 	public Boolean registrarAlumno(Alumno alumnoARegistrar) {
@@ -78,14 +122,6 @@ public class Universidad {
 		return existe;
 	}
 
-	public ArrayList<Alumno> getAlumnos() {
-		return alumnos;
-	}
-
-	public void setAlumnos(ArrayList<Alumno> alumnos) {
-		this.alumnos = alumnos;
-	}
-
 	public boolean registrarDocente(Docente docenteARegistrar) {
 		if (buscarDocentePorDni(docenteARegistrar) != null) {
 			return false;
@@ -111,14 +147,6 @@ public class Universidad {
 		}
 		return null;
 
-	}
-
-	public ArrayList<Docente> getDocentes() {
-		return docentes;
-	}
-
-	public void setDocentes(ArrayList<Docente> docentes) {
-		this.docentes = docentes;
 	}
 
 	public Boolean agregarCicloLectivo(CicloLectivo CicloLectivoAAgregar) {
@@ -207,6 +235,68 @@ public class Universidad {
 
 		}
 		return NosePuedeAsignar;
+	}
+	
+	public boolean agregarCorrelativa(Materia materiaCorrelativa, Materia materia) {
+		boolean sePudoAgregar = false;
+
+		if (materias.contains(materia) && materias.contains(materiaCorrelativa)) {
+			materiasCorrelativas.add(materiaCorrelativa);
+			sePudoAgregar = true;
+		}
+		return sePudoAgregar;
+
+	}
+
+	public boolean eliminarCorrelativa(Materia materiaCorrelativa, Materia materia) {
+		boolean sePudoEliminar = false;
+
+		if (materias.contains(materia) && materias.contains(materiaCorrelativa)
+				&& materiasCorrelativas.contains(materiaCorrelativa)) {
+			materiasCorrelativas.remove(materiaCorrelativa);
+			sePudoEliminar = true;
+		}
+		return sePudoEliminar;
+
+	}
+
+	public Boolean registrarAula(Aula aula) {
+		if (buscarAulaPorID(aula) == null) {
+			return aulas.add(aula);
+		}
+		return false;
+	}
+
+	public Aula buscarAulaPorID(Aula aulaAIngresar) {
+		for (int i = 0; i < aulas.size(); i++) {
+			if (this.aulas.contains(aulaAIngresar)) {
+				return this.aulas.get(i);
+			}
+		}
+		return null;
+
+	}
+
+	public Boolean asignarAulaAlaComision(Comision comisionAAgregar, Docente docenteDesignado) {
+		Aula aulaDisponible = buscarAulaDisponible();
+		if (comisiones.contains(comisionAAgregar) && docentes.contains(docenteDesignado)) {
+			if (aulaDisponible != null) {
+				comisionAAgregar.setAulaAsignada(aulaDisponible);
+				aulaDisponible.setDisponible(false);
+				return true;
+			}
+
+		}
+		return false;
+	}
+
+	public Aula buscarAulaDisponible() {
+		for (Aula aula : aulas) {
+			if (aula.getDisponible()) {
+				return aula;
+			}
+		}
+		return null;
 	}
 
 }
