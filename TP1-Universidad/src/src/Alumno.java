@@ -16,7 +16,7 @@ public class Alumno {
 		this.apellido = apellidoAlumno;
 		this.fechaNacimiento = fechaNacimiento;
 		this.fechaIngreso = fechaIngreso;
-			
+		
 	}
 
 	public Integer getDni() {
@@ -28,8 +28,6 @@ public class Alumno {
 	public void setDni(Integer dni) {
 		this.dni = dni;
 	}
-
-
 
 	public String getNombre() {
 		return nombre;

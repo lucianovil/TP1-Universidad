@@ -5,32 +5,21 @@ import java.util.ArrayList;
 public class Universidad {
 
 	private String nombre;
-	private ArrayList <Materia> materias;
-	private ArrayList <Alumno> alumnos;
-	private ArrayList <Docente> docentes;
+	private ArrayList<Materia> materias;
+	private ArrayList<Alumno> alumnos;
+	private ArrayList<Docente> docentes;
+	private ArrayList<CicloLectivo> ciclosLectivos;
+	private ArrayList<Comision> comisiones;
+	private ArrayList<Materia> materiasCorrelativas;
 
 	public Universidad(String nombreUni) {
 		this.nombre = nombreUni;
-		this.materias= new ArrayList <Materia>();
-		this.alumnos = new ArrayList <Alumno>();
-		this.docentes = new ArrayList <Docente>();
-	}
-
-	public Boolean agregarMateria(Materia materiaAAgregar) {
-		if(buscarMateriaPorID(materiaAAgregar.getId()) == null) {
-		return materias.add(materiaAAgregar);
-		}
-		return false;
-	}
-	
-	public Materia buscarMateriaPorID(Integer iDMateria) {
-		for (int i=0; i<materias.size(); i++) {
-			if (this.materias.get(i).getId().equals(iDMateria)) {
-				return this.materias.get(i);
-			}
-		}
-		return null;
-		
+		this.materias = new ArrayList<Materia>();
+		this.alumnos = new ArrayList<Alumno>();
+		this.docentes = new ArrayList<Docente>();
+		this.ciclosLectivos = new ArrayList<CicloLectivo>();
+		this.comisiones = new ArrayList<Comision>();
+		this.materiasCorrelativas = new ArrayList<Materia>();
 	}
 
 	public String getNombre() {
@@ -47,6 +36,47 @@ public class Universidad {
 
 	public void setMaterias(ArrayList<Materia> materias) {
 		this.materias = materias;
+	}
+
+	public ArrayList<Docente> getDocentes() {
+		return docentes;
+	}
+
+	public void setDocentes(ArrayList<Docente> docentes) {
+		this.docentes = docentes;
+	}
+
+	public ArrayList<Materia> getMateriasCorrelativas() {
+		return materiasCorrelativas;
+	}
+
+	public void setMateriasCorrelativas(ArrayList<Materia> materiasCorrelativas) {
+		this.materiasCorrelativas = materiasCorrelativas;
+	}
+
+	public ArrayList<Alumno> getAlumnos() {
+		return alumnos;
+	}
+
+	public void setAlumnos(ArrayList<Alumno> alumnos) {
+		this.alumnos = alumnos;
+	}
+
+	public Boolean agregarMateria(Materia materiaAAgregar) {
+		if (buscarMateriaPorID(materiaAAgregar.getId()) == null) {
+			return materias.add(materiaAAgregar);
+		}
+		return false;
+	}
+
+	public Materia buscarMateriaPorID(Integer iDMateria) {
+		for (int i = 0; i < materias.size(); i++) {
+			if (this.materias.get(i).getId().equals(iDMateria)) {
+				return this.materias.get(i);
+			}
+		}
+		return null;
+
 	}
 
 	public Boolean registrarAlumno(Alumno alumnoARegistrar) {
@@ -73,39 +103,143 @@ public class Universidad {
 		}
 		return existe;
 	}
-	public ArrayList<Alumno> getAlumnos() {
-		return alumnos;
-	}
-
-	public void setAlumnos(ArrayList<Alumno> alumnos) {
-		this.alumnos = alumnos;
-	}
 
 	public boolean registrarDocente(Docente docenteARegistrar) {
-		if(buscarDocentePorDni(docenteARegistrar.getdNIDocente()) == null) {
-		return docentes.add(docenteARegistrar);
+		if (buscarDocentePorDni(docenteARegistrar) != null) {
+			return false;
 		}
-		return false;
+		return docentes.add(docenteARegistrar);
 	}
-	
-	public Docente buscarDocentePorDni(Integer dNIDocente) {
-		for (int i=0; i<docentes.size(); i++) {
-			if (this.docentes.get(i).getdNIDocente().equals(dNIDocente)) {
+
+	public Docente buscarDocentePorDni(Docente docenteARegistrar) {
+		for (int i = 0; i < docentes.size(); i++) {
+			if (this.docentes.get(i).getdNIDocente().equals(docenteARegistrar.getdNIDocente())) {
 				return this.docentes.get(i);
 			}
 		}
 		return null;
-		
+
 	}
 
-	public ArrayList<Docente> getDocentes() {
-		return docentes;
+	public Docente buscarDocente(Docente DocenteAIngresar) {
+        for (int i = 0; i < docentes.size(); i++) {
+            if (this.docentes.contains(DocenteAIngresar)) {
+                return this.docentes.get(i);
+            }
+        }
+        return null;
+
+    }
+
+	public Boolean agregarCicloLectivo(CicloLectivo CicloLectivoAAgregar) {
+
+		boolean sePudoAgregarCicloLectivo = false;
+
+		if (!existeCicloLectivo(CicloLectivoAAgregar) && !estaSuperPuestoDeFecha(CicloLectivoAAgregar)) {
+
+			ciclosLectivos.add(CicloLectivoAAgregar);
+			sePudoAgregarCicloLectivo = true;
+		}
+
+		return sePudoAgregarCicloLectivo;
+
 	}
 
-	public void setDocentes(ArrayList<Docente> docentes) {
-		this.docentes = docentes;
+//no se pueden superponer los rangos de fechas entre 2 ciclos distintos 
+
+	private boolean estaSuperPuestoDeFecha(CicloLectivo cicloLectivoAAgregar) {
+		boolean estaSuperpuesto = false;
+		int indice = 0;
+
+		while (indice < ciclosLectivos.size() && !estaSuperpuesto) {
+			if (ciclosLectivos.get(indice).getFechaFinalizacion().compareTo(cicloLectivoAAgregar.getFechaInicio()) > 0
+					&& ciclosLectivos.get(indice).getFechaInicio()
+							.compareTo(cicloLectivoAAgregar.getFechaFinalizacion()) < 0)
+				estaSuperpuesto = true;
+		}
+
+		return estaSuperpuesto;
 	}
 
-	
-	
+	public Boolean existeCicloLectivo(CicloLectivo CicloLectivoIngresado) {
+		boolean existe = false;
+		int indice = 0;
+		while (indice < ciclosLectivos.size() && !existe) {
+			if (ciclosLectivos.get(indice).getId().equals(CicloLectivoIngresado.getId())) {
+				existe = true;
+			}
+			indice++;
+		}
+		return existe;
+	}
+
+	public Boolean agregarComision(Comision comisionAAgregar) {
+		if (buscarComisionPorID(comisionAAgregar) == null
+				&& buscarComisionPorCaracteristicas(comisionAAgregar.getMateria(), comisionAAgregar.getCicloLectivo(),
+						comisionAAgregar.getTipoDeTurno()) == null) {
+			return comisiones.add(comisionAAgregar);
+		}
+		return false;
+	}
+
+	public Comision buscarComisionPorID(Comision iDComision) {
+        for (int i = 0; i < comisiones.size(); i++) {
+            if (this.comisiones.get(i).getId().equals(iDComision.getId())) {
+                return this.comisiones.get(i);
+            }
+        }
+        return null;
+
+    }
+
+	public Comision buscarComisionPorCaracteristicas(Materia materia, CicloLectivo cicloLectivo, Turno turno) {
+		for (int i = 0; i < comisiones.size(); i++) {
+			if (this.comisiones.get(i).getMateria().getId().equals(materia.getId())
+					&& this.comisiones.get(i).getCicloLectivo().getId().equals(cicloLectivo.getId())
+					&& this.comisiones.get(i).getTipoDeTurno().equals(turno)) {
+				return this.comisiones.get(i);
+			}
+		}
+		return null;
+
+	}
+
+	public Boolean asignarDocenteAComision(Docente docenteDNI, Comision iDcomision) {
+        boolean NosePuedeAsignar = false;
+        if (buscarDocente(docenteDNI) != null && buscarComisionPorID(iDcomision) != null) {
+            for (int i = 0; i < iDcomision.getDocentes().size(); i++) {
+                if (iDcomision.getDocentes().get(i).getdNIDocente().equals(docenteDNI.getdNIDocente())) {
+                    return NosePuedeAsignar;
+                }
+                iDcomision.getDocentes().add(docenteDNI);
+                NosePuedeAsignar = true;
+            }
+
+        }
+        return NosePuedeAsignar;
+    }
+
+	public boolean agregarCorrelativa(Materia materiaCorrelativa, Materia materia) {
+		boolean sePudoAgregar = false;
+
+		if (materias.contains(materia) && materias.contains(materiaCorrelativa)) {
+			materiasCorrelativas.add(materiaCorrelativa);
+			sePudoAgregar = true;
+		}
+		return sePudoAgregar;
+
+	}
+
+	public boolean eliminarCorrelativa(Materia materiaCorrelativa, Materia materia) {
+		boolean sePudoEliminar = false;
+
+		if (materias.contains(materia) && materias.contains(materiaCorrelativa)
+				&& materiasCorrelativas.contains(materiaCorrelativa)) {
+			materiasCorrelativas.remove(materiaCorrelativa);
+			sePudoEliminar = true;
+		}
+		return sePudoEliminar;
+
+	}
+
 }

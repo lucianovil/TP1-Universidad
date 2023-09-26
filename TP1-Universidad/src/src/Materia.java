@@ -7,7 +7,7 @@ public class Materia {
 
 	public Materia(Integer idMateria, String nombreMateria) {
 		this.id = idMateria;
-		this.nombre= nombreMateria;
+		this.nombre = nombreMateria;
 
 	}
 
@@ -26,7 +26,5 @@ public class Materia {
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
-	
-	
 
 }
