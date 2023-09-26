@@ -10,20 +10,18 @@ public class Alumno {
 
 	public Alumno(Integer dni, String nombreAlumno, String apellidoAlumno, String fechaNacimiento,
 			String fechaIngreso) {
-		
+
 		this.dni = dni;
 		this.nombre = nombreAlumno;
 		this.apellido = apellidoAlumno;
 		this.fechaNacimiento = fechaNacimiento;
 		this.fechaIngreso = fechaIngreso;
-		
+
 	}
 
 	public Integer getDni() {
 		return dni;
 	}
-
-
 
 	public void setDni(Integer dni) {
 		this.dni = dni;

@@ -1,17 +1,23 @@
 package src;
 
+import java.util.ArrayList;
+
 public class Comision {
 
 	private Integer id;
 	private CicloLectivo cicloLectivo;
 	private Materia materia;
 	private Turno tipoDeTurno;
+	private ArrayList<Alumno> alumnos;
+	private ArrayList<Docente> docentes;
 
 	public Comision(Integer id, Materia materia, CicloLectivo cicloLectivo, Turno tipoDeTurno) {
-		this.id =id;
-		this.materia= materia;
-		this.cicloLectivo =cicloLectivo;
-		this.tipoDeTurno =tipoDeTurno;
+		this.id = id;
+		this.materia = materia;
+		this.cicloLectivo = cicloLectivo;
+		this.tipoDeTurno = tipoDeTurno;
+		this.alumnos = new ArrayList<Alumno>();
+		this.docentes = new ArrayList<Docente>();
 	}
 
 	public Integer getId() {
@@ -45,7 +51,38 @@ public class Comision {
 	public void setTipoDeTurno(Turno tipoDeTurno) {
 		this.tipoDeTurno = tipoDeTurno;
 	}
-	
-	
+
+	public ArrayList<Alumno> getAlumnos() {
+		return alumnos;
+	}
+
+	public void setAlumnos(ArrayList<Alumno> alumnos) {
+		this.alumnos = alumnos;
+	}
+
+	public ArrayList<Docente> getDocentes() {
+		return docentes;
+	}
+
+	public void setDocentes(ArrayList<Docente> docentes) {
+		this.docentes = docentes;
+	}
+
+	public Boolean asignarDocenteAComision(Docente docenteAAgregar) {
+		if (buscarDocente(docenteAAgregar) == null) {
+			return docentes.add(docenteAAgregar);
+		}
+		return false;
+	}
+
+	public Docente buscarDocente(Docente DocenteAIngresar) {
+		for (int i = 0; i < docentes.size(); i++) {
+			if (this.docentes.contains(DocenteAIngresar)) {
+				return this.docentes.get(i);
+			}
+		}
+		return null;
+
+	}
 
 }

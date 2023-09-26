@@ -87,15 +87,25 @@ public class Universidad {
 	}
 
 	public boolean registrarDocente(Docente docenteARegistrar) {
-		if (buscarDocentePorDni(docenteARegistrar.getdNIDocente()) == null) {
-			return docentes.add(docenteARegistrar);
+		if (buscarDocentePorDni(docenteARegistrar) != null) {
+			return false;
 		}
-		return false;
+		return docentes.add(docenteARegistrar);
 	}
 
-	public Docente buscarDocentePorDni(Integer dNIDocente) {
+	public Docente buscarDocentePorDni(Docente docenteARegistrar) {
 		for (int i = 0; i < docentes.size(); i++) {
-			if (this.docentes.get(i).getdNIDocente().equals(dNIDocente)) {
+			if (this.docentes.get(i).getdNIDocente().equals(docenteARegistrar.getdNIDocente())) {
+				return this.docentes.get(i);
+			}
+		}
+		return null;
+
+	}
+
+	public Docente buscarDocente(Docente DocenteAIngresar) {
+		for (int i = 0; i < docentes.size(); i++) {
+			if (this.docentes.contains(DocenteAIngresar)) {
 				return this.docentes.get(i);
 			}
 		}
@@ -154,7 +164,7 @@ public class Universidad {
 	}
 
 	public Boolean agregarComision(Comision comisionAAgregar) {
-		if (buscarComisionPorID(comisionAAgregar.getId()) == null
+		if (buscarComisionPorID(comisionAAgregar) == null
 				&& buscarComisionPorCaracteristicas(comisionAAgregar.getMateria(), comisionAAgregar.getCicloLectivo(),
 						comisionAAgregar.getTipoDeTurno()) == null) {
 			return comisiones.add(comisionAAgregar);
@@ -162,9 +172,9 @@ public class Universidad {
 		return false;
 	}
 
-	public Comision buscarComisionPorID(Integer iDComision) {
+	public Comision buscarComisionPorID(Comision iDComision) {
 		for (int i = 0; i < comisiones.size(); i++) {
-			if (this.comisiones.get(i).getId().equals(iDComision)) {
+			if (this.comisiones.get(i).getId().equals(iDComision.getId())) {
 				return this.comisiones.get(i);
 			}
 		}
@@ -182,6 +192,21 @@ public class Universidad {
 		}
 		return null;
 
+	}
+
+	public Boolean asignarDocenteAComision(Docente docenteDNI, Comision iDcomision) {
+		boolean NosePuedeAsignar = false;
+		if (buscarDocente(docenteDNI) != null && buscarComisionPorID(iDcomision) != null) {
+			for (int i = 0; i < iDcomision.getDocentes().size(); i++) {
+				if (iDcomision.getDocentes().get(i).getdNIDocente().equals(docenteDNI.getdNIDocente())) {
+					return NosePuedeAsignar;
+				}
+				iDcomision.getDocentes().add(docenteDNI);
+				NosePuedeAsignar = true;
+			}
+
+		}
+		return NosePuedeAsignar;
 	}
 
 }
