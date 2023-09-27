@@ -1,5 +1,8 @@
 package src;
 
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class Universidad {
@@ -11,6 +14,9 @@ public class Universidad {
 	private ArrayList<CicloLectivo> ciclosLectivos;
 	private ArrayList<Comision> comisiones;
 	private ArrayList<Materia> materiasCorrelativas;
+	private ArrayList<Aula> aulas;
+	
+	
 
 	public Universidad(String nombreUni) {
 		this.nombre = nombreUni;
@@ -20,6 +26,14 @@ public class Universidad {
 		this.ciclosLectivos = new ArrayList<CicloLectivo>();
 		this.comisiones = new ArrayList<Comision>();
 		this.materiasCorrelativas = new ArrayList<Materia>();
+		this.aulas = new ArrayList<Aula>();
+	}
+	public ArrayList<Aula> getAulas() {
+		return aulas;
+	}
+
+	public void setAulas(ArrayList<Aula> aulas) {
+		this.aulas = aulas;
 	}
 
 	public String getNombre() {
@@ -62,6 +76,19 @@ public class Universidad {
 		this.alumnos = alumnos;
 	}
 
+	public ArrayList<CicloLectivo> getCiclosLectivos() {
+		return ciclosLectivos;
+	}
+	public void setCiclosLectivos(ArrayList<CicloLectivo> ciclosLectivos) {
+		this.ciclosLectivos = ciclosLectivos;
+	}
+	public ArrayList<Comision> getComisiones() {
+		return comisiones;
+	}
+	public void setComisiones(ArrayList<Comision> comisiones) {
+		this.comisiones = comisiones;
+	}
+	
 	public Boolean agregarMateria(Materia materiaAAgregar) {
 		if (buscarMateriaPorID(materiaAAgregar.getId()) == null) {
 			return materias.add(materiaAAgregar);
@@ -204,20 +231,6 @@ public class Universidad {
 
 	}
 
-	public Boolean asignarDocenteAComision(Docente docenteDNI, Comision iDcomision) {
-        boolean NosePuedeAsignar = false;
-        if (buscarDocente(docenteDNI) != null && buscarComisionPorID(iDcomision) != null) {
-            for (int i = 0; i < iDcomision.getDocentes().size(); i++) {
-                if (iDcomision.getDocentes().get(i).getdNIDocente().equals(docenteDNI.getdNIDocente())) {
-                    return NosePuedeAsignar;
-                }
-                iDcomision.getDocentes().add(docenteDNI);
-                NosePuedeAsignar = true;
-            }
-
-        }
-        return NosePuedeAsignar;
-    }
 
 	public boolean agregarCorrelativa(Materia materiaCorrelativa, Materia materia) {
 		boolean sePudoAgregar = false;
@@ -241,5 +254,104 @@ public class Universidad {
 		return sePudoEliminar;
 
 	}
+	public Boolean registrarAula(Aula aula) {
+		if (buscarAulaPorID(aula) == null) {
+			return aulas.add(aula);
+		}
+		return false;
+	}
+
+	public Aula buscarAulaPorID(Aula aulaAIngresar) {
+		for (int i = 0; i < aulas.size(); i++) {
+			if (this.aulas.contains(aulaAIngresar)) {
+				return this.aulas.get(i);
+			}
+		}
+		return null;
+
+	}
+
+	public Boolean asignarAulaAlaComision(Comision comisionAAgregar, Docente docenteDesignado) {
+		Aula aulaDisponible = buscarAulaDisponible();
+		if (comisiones.contains(comisionAAgregar) && docentes.contains(docenteDesignado)) {
+			if (aulaDisponible != null) {
+				comisionAAgregar.setAulaAsignada(aulaDisponible);
+				aulaDisponible.setDisponible(false);
+				return true;
+			}
+
+		}
+		return false;
+	}
+	
+	
+
+	public Aula buscarAulaDisponible() {
+		for (Aula aula : aulas) {
+			if (aula.getDisponible()) {
+				return aula;
+			}
+		}
+		return null;
+	}
+	
+	
+	public Boolean asignarAlumnoALacomision(Comision comision, Alumno alumnoPrueba) {
+		boolean sePudoAsignar = false;
+
+		LocalDate fechaActual = LocalDate.of(2023, 03, 04);
+		DateTimeFormatter formateador = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		String fechaComoTexto = fechaActual.format(formateador);
+
+
+		
+		if(comisiones.contains(comision) && alumnos.contains(alumnoPrueba) )  {
+			if(!comision.existeAlumno(alumnoPrueba)) {
+				comision.getAlumnos().add(alumnoPrueba);
+				sePudoAsignar = true;
+			}
+			
+		}
+		return sePudoAsignar;
+	}
+	
+	public void actualizarFecha(String fecha) {
+		
+		
+		
+		
+	}
+	
+	public Boolean asignarDocenteAComision(Docente docente, Comision comision) {
+boolean sePudoAsignar = false;
+
+
+		if(comisiones.contains(comision) && docentes.contains(docente)) {
+	
+			if(!comision.existeDocente(docente)) {
+				comision.getDocentes().add(docente);
+				sePudoAsignar = true;
+			}
+			
+		}
+		return sePudoAsignar;
+	}
+	
+	
+//	public Boolean verificarFechaDeInscripcion(Comision comision1, String fecha) {
+//		boolean esFechaValida = false;
+//		if(comision1.getCicloLectivo().getFechaInscripcion().equals(fecha)) {
+//			esFechaValida = true;
+//		}
+//		
+//		return esFechaValida;
+//		
+//		
+//	}
+	
+	
+
+
+
 
 }
