@@ -172,7 +172,7 @@ public class Universidad {
 
 	}
 
-//no se pueden superponer los rangos de fechas entre 2 ciclos distintos 
+
 
 	private boolean estaSuperPuestoDeFecha(CicloLectivo cicloLectivoAAgregar) {
 		boolean estaSuperpuesto = false;
@@ -218,6 +218,24 @@ public class Universidad {
         return null;
 
     }
+	public Alumno buscarAlumnoPorID(Alumno alumnoBuscado) {
+	    for (Alumno alumno : alumnos) {
+	        if (alumno.equals(alumnoBuscado)) {
+	            return alumno;
+	        }
+	    }
+	    return null; 
+	}
+
+	public Materia BuscarMateria(Materia materiaBuscada) {
+	    for (Materia materia : materias) {
+	        if (materia.equals(materiaBuscada)) {
+	            return materia;
+	        }
+	    }
+	    return null; 
+	
+	}
 
 	public Comision buscarComisionPorCaracteristicas(Materia materia, CicloLectivo cicloLectivo, Turno turno) {
 		for (int i = 0; i < comisiones.size(); i++) {
@@ -338,17 +356,85 @@ boolean sePudoAsignar = false;
 	}
 	
 	
-//	public Boolean verificarFechaDeInscripcion(Comision comision1, String fecha) {
-//		boolean esFechaValida = false;
-//		if(comision1.getCicloLectivo().getFechaInscripcion().equals(fecha)) {
-//			esFechaValida = true;
-//		}
-//		
-//		return esFechaValida;
-//		
-//		
-//	}
+	public boolean registrarNota(Comision comision, Alumno alumno, Nota nota) {
+	    if (laNotaEstaEnRangoEntreUnoYDiez(nota)) {
+	      
+	        alumno.agregarNota(nota);
+	        return true;
+	    }
+	    return false;
+	}
 	
+	
+	private boolean laNotaEstaEnRangoEntreUnoYDiez(Nota nota) {
+	    return nota.getValor() >= 1 && nota.getValor() <= 10;
+	}
+	
+	
+	 public boolean rendirRecuperatorio(Alumno alumno) {
+	       boolean puedeRecuperar = false;
+	        if (alumno.getRecuperatoriosRendidos() >= 1) {
+	            return puedeRecuperar; 
+	        } else {
+	         
+	            alumno.setRecuperatoriosRendidos(alumno.getRecuperatoriosRendidos() + 1);
+	           puedeRecuperar = true;
+	        }
+	       return  puedeRecuperar;
+	    }
+	 
+	 public boolean cargarNotaFinal(Comision comision, Alumno alumno, Nota notaFinal) {
+		   boolean sePuedeCargar = false;
+		    if (notaFinal.getTipo() != TipoNota.FINAL) {
+		        return sePuedeCargar; 
+		    }
+
+		   
+		    boolean tienePrimerParcialAprobado = alumno.tieneParcialAprobado(comision.getMateria(), TipoNota.PRIMER_PARCIAL);
+		    boolean tieneSegundoParcialAprobado = alumno.tieneParcialAprobado(comision.getMateria(), TipoNota.SEGUNDO_PARCIAL);
+
+		    if (tienePrimerParcialAprobado && tieneSegundoParcialAprobado) {
+		        
+		        alumno.agregarNota(notaFinal);
+		        alumno.agregarMateriaAprobada(comision.getMateria());
+		        sePuedeCargar = true;
+		    }
+
+		    return sePuedeCargar; 
+		}
+	
+	 
+	 public Nota obtenerNota(Alumno alumnoPrueba, Materia materia) {
+		 Alumno alumno = buscarAlumnoPorID(alumnoPrueba);
+
+	    for (Nota nota : alumno.getNotas()) {
+	        if (nota.getMateria().equals(materia)) {
+	            return nota; 
+	        }
+	    }
+		return null;
+		
+	}
+	 public ArrayList<Materia> obtenerMateriasAprobadasParaUnAlumno(Alumno alumnoPrueba) {
+		   
+		 ArrayList<Materia> materiasAprobadas = new ArrayList<>();
+
+		    for (Materia materia : alumnoPrueba.getMateriasAprobadas()) {
+		        
+		        if (alumnoPrueba.tieneMateriaAprobada(materia)) {
+		           
+		            materiasAprobadas.add(materia);
+		        }
+		    }
+
+		    return materiasAprobadas;
+		}
+
+	 
+	
+	
+
+
 	
 
 

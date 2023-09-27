@@ -2,35 +2,39 @@ package src;
 
 public class Nota {
 
-	   
-	    private Integer valor;
-	    private String tipo; 
-	  
+	private int valor;
+    private TipoNota tipo;
+    private Materia materia;
 
-	    public Nota(Integer valor, String tipo) {
-	       
-	        this.valor = valor;
-	        this.tipo = tipo;
-	    
-	    }
+    public Nota(int valor, TipoNota tipo, Materia materia) {
+        this.valor = valor;
+        this.tipo = tipo;
+        this.materia = materia;
+    }
 
+    public Materia getMateria() {
+		return materia;
+	}
 
-		public Integer getValor() {
-			return valor;
-		}
+	public void setMateria(Materia materia) {
+		this.materia = materia;
+	}
 
+	public void setValor(int valor) {
+		this.valor = valor;
+	}
 
-		public void setValor(Integer valor) {
-			this.valor = valor;
-		}
+	public void setTipo(TipoNota tipo) {
+		this.tipo = tipo;
+	}
 
+	public int getValor() {
+        return valor;
+    }
 
-		public String getTipo() {
-			return tipo;
-		}
+    public TipoNota getTipo() {
+        return tipo;
+    }
 
-
-		public void setTipo(String tipo) {
-			this.tipo = tipo;
-		}
+	
 }

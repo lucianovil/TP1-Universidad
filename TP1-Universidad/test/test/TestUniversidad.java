@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+
 import org.junit.Test;
 
 import src.Alumno;
@@ -13,6 +14,8 @@ import src.CicloLectivo;
 import src.Comision;
 import src.Docente;
 import src.Materia;
+import src.Nota;
+import src.TipoNota;
 import src.Turno;
 import src.Universidad;
 
@@ -268,30 +271,7 @@ public class TestUniversidad {
 
 	}
 
-//	@Test
-//	public void queNoSePuedaAsignarAlMismoProfesorEnLaComision() {
-//
-//		String nombreUni = "Unlam";
-//		Universidad unlam = new Universidad(nombreUni);
-//
-//		Integer id = 1;
-//		Materia pb1 = new Materia(1, "pb1");
-//		CicloLectivo UnoC2023 = new CicloLectivo(1, "2023-03-04", "2023-07-06", "2023-03-03");
-//		Turno TipoDeTurno = Turno.MAÑANA;
-//
-//		Comision Comision1 = new Comision(id, pb1, UnoC2023, TipoDeTurno);
-//		unlam.agregarComision(Comision1);
-//		Docente docentePrueba = new Docente(1, "Juan", "Monteagudo", "1983-10-04", "2019-04-01");
-//		unlam.registrarDocente(docentePrueba);
-//		Docente docentePrueba2 = new Docente(2, "Juan", "Monteagudo", "1983-10-04", "2019-04-01");
-//		unlam.registrarDocente(docentePrueba2);
-//		unlam.asignarDocenteAComision(docentePrueba, Comision1);
-//		unlam.asignarDocenteAComision(docentePrueba2, Comision1);
-//		Integer valorObtenido = unlam.getDocentes().size();
-//		Integer valorEsperado = 1;
-//		assertEquals(valorEsperado,valorObtenido);
-//
-//	}
+
 
 	@Test
 	public void queSePuedaAgregarUnaCorrelativa() {
@@ -329,7 +309,7 @@ public class TestUniversidad {
 
 	}
 	
-	@Test  // cambiamos un poco la logica para que se puedan registrar 2 o mas
+	@Test 
 	public void queSePuedaRegistrarDosAulasEnLaUniversidad() { 
 		String nombreUni = "Unlam";
 		Universidad unlam = new Universidad(nombreUni);
@@ -473,5 +453,200 @@ public class TestUniversidad {
 
 	}
 	
+	@Test
+	public void registrarNotaValidaEntre1Y10() {
 
+	    String nombreUni = "Unlam";
+		Universidad unlam = new Universidad(nombreUni);
+
+		Integer id = 1;
+		Materia pb1 = new Materia(1, "pb1");
+		CicloLectivo UnoC2023 = new CicloLectivo(1, "2023-03-04", "2023-07-06", "2023-03-03");
+		Turno TipoDeTurno = Turno.MAÑANA;
+
+		Comision comision1 = new Comision(id, pb1, UnoC2023, TipoDeTurno);
+		unlam.agregarComision(comision1);
+		String nombreAlumno = "Lucho";
+		String apellidoAlumno = "Vilan";
+		String fechaNacimiento = "1995-03-22";
+		String fechaIngreso = "2022-04-01";
+		Integer dni = 39415111;
+		Alumno alumnoPrueba = new Alumno(dni, nombreAlumno, apellidoAlumno, fechaNacimiento, fechaIngreso);
+	   
+	    Nota nota = new Nota(8, TipoNota.PRIMER_PARCIAL,pb1); // Asegúrate de configurar el tipo correcto aquí
+	    boolean resultado = unlam.registrarNota(comision1, alumnoPrueba, nota);
+	    
+	 
+	    assertTrue(resultado);
+	}
+	
+	
+//	@Test
+//	public void registrarNotaMayorIgualA7SinCorrelativasAprobadas() {
+//	    
+//	    
+//		  String nombreUni = "Unlam";
+//			Universidad unlam = new Universidad(nombreUni);
+//
+//			Integer id = 1;
+//			Materia pb1 = new Materia(1, "pb1");
+//			CicloLectivo UnoC2023 = new CicloLectivo(1, "2023-03-04", "2023-07-06", "2023-03-03");
+//			Turno TipoDeTurno = Turno.MAÑANA;
+//
+//			Comision comision1 = new Comision(id, pb1, UnoC2023, TipoDeTurno);
+//			unlam.agregarComision(comision1);
+//			String nombreAlumno = "Lucho";
+//			String apellidoAlumno = "Vilan";
+//			String fechaNacimiento = "1995-03-22";
+//			String fechaIngreso = "2022-04-01";
+//			Integer dni = 39415111;
+//			Alumno alumnoPrueba = new Alumno(dni, nombreAlumno, apellidoAlumno, fechaNacimiento, fechaIngreso);
+//		 
+//	  
+//	    Nota nota = new Nota(8, TipoNota.PRIMER_PARCIAL, pb1); 
+//	    boolean resultado = unlam.registrarNota(comision1, alumnoPrueba, nota);
+//	    
+//	    
+//	    assertFalse(resultado);
+//	}
+	
+	
+	@Test
+	public void alumnoNoPuedeRendirDosRecuperatorios() {
+	   
+	    String nombreUni = "Unlam";
+	    Universidad unlam = new Universidad(nombreUni);
+
+	    Integer dni = 39415111;
+	    String nombreAlumno = "Juan";
+	    String apellidoAlumno = "Acunia";
+	    String fechaNacimiento = "1995-01-01";
+	    String fechaIngreso = "2022-03-01";
+	    Alumno alumno = new Alumno(dni, nombreAlumno, apellidoAlumno, fechaNacimiento, fechaIngreso);
+	    unlam.rendirRecuperatorio(alumno); 
+	    assertFalse(unlam.rendirRecuperatorio(alumno));
+	}
+	
+	
+	 
+	 
+
+	    @Test
+	    public void cargarNotaFinalConParcialesAprobados() {
+	      
+	        String nombreUni = "Unlam";
+	        Universidad unlam = new Universidad(nombreUni);
+
+	        Integer id = 1;
+	        Materia pb1 = new Materia(id, "PB1");
+	        CicloLectivo cicloLectivo = new CicloLectivo(1, "2023-03-04", "2023-07-06", "2023-03-03");
+	        Turno turno = Turno.MAÑANA;
+
+	        Comision comision1 = new Comision(id, pb1, cicloLectivo, turno);
+	        unlam.agregarComision(comision1);
+
+	        String nombreAlumno = "Lucho";
+	        String apellidoAlumno = "Vilan";
+	        String fechaNacimiento = "1995-03-22";
+	        String fechaIngreso = "2022-04-01";
+	        Integer dni = 39415111;
+	        Alumno alumnoPrueba = new Alumno(dni, nombreAlumno, apellidoAlumno, fechaNacimiento, fechaIngreso);
+	        
+	       
+	        Nota parcial1 = new Nota(5, TipoNota.PRIMER_PARCIAL,pb1);
+	        Nota parcial2 = new Nota(6, TipoNota.SEGUNDO_PARCIAL,pb1);
+	        alumnoPrueba.agregarNota(parcial1);
+	        alumnoPrueba.agregarNota(parcial2);
+	       
+	        int promedioParciales = alumnoPrueba.calcularPromedioDeNotas();
+	        // Configura una nota final
+	        Nota notaFinal = new Nota(promedioParciales, TipoNota.FINAL,pb1);
+
+	  
+	        boolean resultado = unlam.cargarNotaFinal(comision1, alumnoPrueba, notaFinal);
+
+	        
+	        assertTrue(resultado);
+	    }
+	    
+	    @Test
+		 public void obtenerNotaExistente() {
+	    	 String nombreUni = "Unlam";
+		        Universidad unlam = new Universidad(nombreUni);
+
+		        Integer id = 1;
+		        Materia pb1 = new Materia(id, "PB1");
+		        CicloLectivo cicloLectivo = new CicloLectivo(1, "2023-03-04", "2023-07-06", "2023-03-03");
+		        Turno turno = Turno.MAÑANA;
+		        unlam.agregarMateria(pb1);
+		        
+		        Comision comision1 = new Comision(id, pb1, cicloLectivo, turno);
+		        unlam.agregarComision(comision1);
+
+		        String nombreAlumno = "Lucho";
+		        String apellidoAlumno = "Vilan";
+		        String fechaNacimiento = "1995-03-22";
+		        String fechaIngreso = "2022-04-01";
+		        Integer dni = 39415111;
+		        Alumno alumnoPrueba = new Alumno(dni, nombreAlumno, apellidoAlumno, fechaNacimiento, fechaIngreso);
+		        unlam.registrarAlumno(alumnoPrueba);
+		        
+		       
+		        Nota parcial1 = new Nota(5, TipoNota.PRIMER_PARCIAL,pb1);
+		        unlam.registrarNota(comision1, alumnoPrueba, parcial1);
+		        
+		        Nota notaObtenida = unlam.obtenerNota(alumnoPrueba,pb1);
+		        assertEquals(parcial1, notaObtenida);
+		        
+		        
+			 
+		 }
+	    
+	    @Test
+	    public void obtenerMateriasAprobadasParaUnAlumno() {
+	        
+	        String nombreUni = "Unlam";
+	        Universidad unlam = new Universidad(nombreUni);
+
+	        Integer id = 1;
+	        Materia pb1 = new Materia(id, "pb1");
+	       
+	        CicloLectivo cicloLectivo = new CicloLectivo(1, "2023-03-04", "2023-07-06", "2023-03-03");
+	        Turno turno = Turno.MAÑANA;
+	        unlam.agregarMateria(pb1);
+	      
+
+	        Comision comision1 = new Comision(id, pb1, cicloLectivo, turno);
+	        unlam.agregarComision(comision1);
+
+	        String nombreAlumno = "Lucho";
+	        String apellidoAlumno = "Vilan";
+	        String fechaNacimiento = "1995-03-22";
+	        String fechaIngreso = "2022-04-01";
+	        Integer dni = 39415111;
+	        Alumno alumnoPrueba = new Alumno(dni, nombreAlumno, apellidoAlumno, fechaNacimiento, fechaIngreso);
+	        unlam.registrarAlumno(alumnoPrueba);
+
+	
+	        Nota parcial1 = new Nota(5, TipoNota.PRIMER_PARCIAL, pb1);
+	        Nota parcial2 = new Nota(6, TipoNota.SEGUNDO_PARCIAL, pb1);
+	        unlam.registrarNota(comision1, alumnoPrueba, parcial1);
+	        unlam.registrarNota(comision1, alumnoPrueba, parcial2);
+	        int promedioParciales = alumnoPrueba.calcularPromedioDeNotas();
+	        Nota notaFinal = new Nota(promedioParciales, TipoNota.FINAL,pb1);
+	        
+	       
+	      
+	    
+	        unlam.cargarNotaFinal(comision1, alumnoPrueba, notaFinal);
+	        
+
+	       
+	        int valorObtenido = unlam.obtenerMateriasAprobadasParaUnAlumno(alumnoPrueba).size();
+	        int valorEsperado = 1;
+	       
+	        assertEquals(valorEsperado, valorObtenido);
+
+	       
+	    }
 }
