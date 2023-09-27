@@ -7,14 +7,17 @@ public class Aula {
 	private Integer numeroAula;
 	private ArrayList<Alumno> alumnos;
 	private ArrayList<Docente> docentes;
-	private static Integer CANTIDAD_MAXIMA_ALUMNOS=50;
+	private Integer capacidadMaxima;
+	private Integer capacidadActual;
 	private Boolean disponible;
 
-	public Aula(Integer numeroAula) {
-		this.numeroAula= numeroAula;
-		this.alumnos = new ArrayList<Alumno>(CANTIDAD_MAXIMA_ALUMNOS);
+	public Aula(Integer numeroAula, Integer capacidadMaxima) {
+		this.numeroAula = numeroAula;
+		this.alumnos = new ArrayList<Alumno>();
 		this.docentes = new ArrayList<Docente>();
-		this.disponible=true;
+		this.disponible = true;
+		this.capacidadMaxima = capacidadMaxima;
+		this.capacidadActual = 0;
 	}
 
 	public Integer getNumeroAula() {
@@ -41,12 +44,12 @@ public class Aula {
 		this.docentes = docentes;
 	}
 
-	public static Integer getCANTIDAD_MAXIMA_ALUMNOS() {
-		return CANTIDAD_MAXIMA_ALUMNOS;
+	public Integer getCapacidadMaxima() {
+		return capacidadMaxima;
 	}
 
-	public static void setCANTIDAD_MAXIMA_ALUMNOS(Integer cANTIDAD_MAXIMA_ALUMNOS) {
-		CANTIDAD_MAXIMA_ALUMNOS = cANTIDAD_MAXIMA_ALUMNOS;
+	public void setCapacidadMaxima(Integer capacidadMaxima) {
+		this.capacidadMaxima = capacidadMaxima;
 	}
 
 	public Boolean getDisponible() {
@@ -56,14 +59,27 @@ public class Aula {
 	public void setDisponible(Boolean disponible) {
 		this.disponible = disponible;
 	}
-	
+
 	public void ocuparAula() {
-        disponible = false; 
-    }
+		disponible = false;
+	}
 
-    public void liberarAula() {
-        disponible = true; 
-    }
+	public void liberarAula() {
+		disponible = true;
+	}
 
-	
+	public Integer getCapacidadActual() {
+		return capacidadActual;
+	}
+
+	public void setCapacidadActual(Integer capacidadActual) {
+		this.capacidadActual = capacidadActual;
+	}
+
+	public void aumentarCapacidad() {
+		if (capacidadActual < capacidadMaxima) {
+			capacidadActual++;
+		}
+	}
+
 }

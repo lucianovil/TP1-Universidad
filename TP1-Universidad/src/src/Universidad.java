@@ -24,6 +24,14 @@ public class Universidad {
 		this.aulas = new ArrayList<Aula>();
 	}
 
+	public ArrayList<Aula> getAulas() {
+		return aulas;
+	}
+
+	public void setAulas(ArrayList<Aula> aulas) {
+		this.aulas = aulas;
+	}
+
 	public String getNombre() {
 		return nombre;
 	}
@@ -40,20 +48,28 @@ public class Universidad {
 		this.materias = materias;
 	}
 
-	public ArrayList<Alumno> getAlumnos() {
-		return alumnos;
-	}
-
-	public void setAlumnos(ArrayList<Alumno> alumnos) {
-		this.alumnos = alumnos;
-	}
-
 	public ArrayList<Docente> getDocentes() {
 		return docentes;
 	}
 
 	public void setDocentes(ArrayList<Docente> docentes) {
 		this.docentes = docentes;
+	}
+
+	public ArrayList<Materia> getMateriasCorrelativas() {
+		return materiasCorrelativas;
+	}
+
+	public void setMateriasCorrelativas(ArrayList<Materia> materiasCorrelativas) {
+		this.materiasCorrelativas = materiasCorrelativas;
+	}
+
+	public ArrayList<Alumno> getAlumnos() {
+		return alumnos;
+	}
+
+	public void setAlumnos(ArrayList<Alumno> alumnos) {
+		this.alumnos = alumnos;
 	}
 
 	public ArrayList<CicloLectivo> getCiclosLectivos() {
@@ -70,14 +86,6 @@ public class Universidad {
 
 	public void setComisiones(ArrayList<Comision> comisiones) {
 		this.comisiones = comisiones;
-	}
-
-	public ArrayList<Aula> getAulas() {
-		return aulas;
-	}
-
-	public void setAulas(ArrayList<Aula> aulas) {
-		this.aulas = aulas;
 	}
 
 	public Boolean agregarMateria(Materia materiaAAgregar) {
@@ -163,8 +171,6 @@ public class Universidad {
 
 	}
 
-//no se pueden superponer los rangos de fechas entre 2 ciclos distintos 
-
 	private boolean estaSuperPuestoDeFecha(CicloLectivo cicloLectivoAAgregar) {
 		boolean estaSuperpuesto = false;
 		int indice = 0;
@@ -210,6 +216,25 @@ public class Universidad {
 
 	}
 
+	public Alumno buscarAlumnoPorID(Alumno alumnoBuscado) {
+		for (Alumno alumno : alumnos) {
+			if (alumno.equals(alumnoBuscado)) {
+				return alumno;
+			}
+		}
+		return null;
+	}
+
+	public Materia BuscarMateria(Materia materiaBuscada) {
+		for (Materia materia : materias) {
+			if (materia.equals(materiaBuscada)) {
+				return materia;
+			}
+		}
+		return null;
+
+	}
+
 	public Comision buscarComisionPorCaracteristicas(Materia materia, CicloLectivo cicloLectivo, Turno turno) {
 		for (int i = 0; i < comisiones.size(); i++) {
 			if (this.comisiones.get(i).getMateria().getId().equals(materia.getId())
@@ -222,21 +247,6 @@ public class Universidad {
 
 	}
 
-	public Boolean asignarDocenteAComision(Docente docenteDNI, Comision iDcomision) {
-		boolean NosePuedeAsignar = false;
-		if (buscarDocente(docenteDNI) != null && buscarComisionPorID(iDcomision) != null) {
-			for (int i = 0; i < iDcomision.getDocentes().size(); i++) {
-				if (iDcomision.getDocentes().get(i).getdNIDocente().equals(docenteDNI.getdNIDocente())) {
-					return NosePuedeAsignar;
-				}
-				iDcomision.getDocentes().add(docenteDNI);
-				NosePuedeAsignar = true;
-			}
-
-		}
-		return NosePuedeAsignar;
-	}
-	
 	public boolean agregarCorrelativa(Materia materiaCorrelativa, Materia materia) {
 		boolean sePudoAgregar = false;
 
@@ -261,15 +271,15 @@ public class Universidad {
 	}
 
 	public Boolean registrarAula(Aula aula) {
-		if (buscarAulaPorID(aula) == null) {
+		if (buscarAulaPorID(aula.getNumeroAula()) == null) {
 			return aulas.add(aula);
 		}
 		return false;
 	}
 
-	public Aula buscarAulaPorID(Aula aulaAIngresar) {
+	public Aula buscarAulaPorID(Integer aulaAIngresar) {
 		for (int i = 0; i < aulas.size(); i++) {
-			if (this.aulas.contains(aulaAIngresar)) {
+			if (this.aulas.get(i).getNumeroAula().equals(aulaAIngresar)) {
 				return this.aulas.get(i);
 			}
 		}
@@ -278,6 +288,7 @@ public class Universidad {
 	}
 
 	public Boolean asignarAulaAlaComision(Comision comisionAAgregar, Docente docenteDesignado) {
+
 		Aula aulaDisponible = buscarAulaDisponible();
 		if (comisiones.contains(comisionAAgregar) && docentes.contains(docenteDesignado)) {
 			if (aulaDisponible != null) {
@@ -299,4 +310,111 @@ public class Universidad {
 		return null;
 	}
 
+	public Boolean asignarAlumnoALacomision(Comision comision, Alumno alumnoPrueba) {
+
+		if (comisiones.contains(comision) && alumnos.contains(alumnoPrueba)) {
+			if (!comision.existeAlumno(alumnoPrueba) && !superaLaCapacidadMaximaDelAula(comision)) {
+				comision.getAlumnos().add(alumnoPrueba);
+				comision.getAulaAsignada().aumentarCapacidad();
+				return true;
+			}
+
+		}
+		return false;
+	}
+
+	private Boolean superaLaCapacidadMaximaDelAula(Comision comision) {
+		Boolean seSuperaCapacidadMaxima = false;
+		if (comision.getAulaAsignada().getCapacidadActual() >= comision.getAulaAsignada().getCapacidadMaxima()) {
+			seSuperaCapacidadMaxima = true;
+		}
+		return seSuperaCapacidadMaxima;
+	}
+
+	public Boolean asignarDocenteAComision(Docente docente, Comision comision) {
+		boolean sePudoAsignar = false;
+
+		if (comisiones.contains(comision) && docentes.contains(docente)) {
+
+			if (!comision.existeDocente(docente)) {
+				comision.getDocentes().add(docente);
+				sePudoAsignar = true;
+			}
+
+		}
+		return sePudoAsignar;
+	}
+
+	public boolean registrarNota(Comision comision, Alumno alumno, Nota nota) {
+		if (laNotaEstaEnRangoEntreUnoYDiez(nota)) {
+
+			alumno.agregarNota(nota);
+			return true;
+		}
+		return false;
+	}
+
+	private boolean laNotaEstaEnRangoEntreUnoYDiez(Nota nota) {
+		return nota.getValor() >= 1 && nota.getValor() <= 10;
+	}
+
+	public boolean rendirRecuperatorio(Alumno alumno) {
+		boolean puedeRecuperar = false;
+		if (alumno.getRecuperatoriosRendidos() >= 1) {
+			return puedeRecuperar;
+		} else {
+
+			alumno.setRecuperatoriosRendidos(alumno.getRecuperatoriosRendidos() + 1);
+			puedeRecuperar = true;
+		}
+		return puedeRecuperar;
+	}
+
+	public boolean cargarNotaFinal(Comision comision, Alumno alumno, Nota notaFinal) {
+		boolean sePuedeCargar = false;
+		if (notaFinal.getTipo() != TipoNota.FINAL) {
+			return sePuedeCargar;
+		}
+
+		boolean tienePrimerParcialAprobado = alumno.tieneParcialAprobado(comision.getMateria(),
+				TipoNota.PRIMER_PARCIAL);
+		boolean tieneSegundoParcialAprobado = alumno.tieneParcialAprobado(comision.getMateria(),
+				TipoNota.SEGUNDO_PARCIAL);
+
+		if (tienePrimerParcialAprobado && tieneSegundoParcialAprobado) {
+
+			alumno.agregarNota(notaFinal);
+			alumno.agregarMateriaAprobada(comision.getMateria());
+			sePuedeCargar = true;
+		}
+
+		return sePuedeCargar;
+	}
+
+	public Nota obtenerNota(Alumno alumnoPrueba, Materia materia) {
+		Alumno alumno = buscarAlumnoPorID(alumnoPrueba);
+
+		for (Nota nota : alumno.getNotas()) {
+			if (nota.getMateria().equals(materia)) {
+				return nota;
+			}
+		}
+		return null;
+
+	}
+
+	public ArrayList<Materia> obtenerMateriasAprobadasParaUnAlumno(Alumno alumnoPrueba) {
+
+		ArrayList<Materia> materiasAprobadas = new ArrayList<>();
+
+		for (Materia materia : alumnoPrueba.getMateriasAprobadas()) {
+
+			if (alumnoPrueba.tieneMateriaAprobada(materia)) {
+
+				materiasAprobadas.add(materia);
+			}
+		}
+
+		return materiasAprobadas;
+	}
 }

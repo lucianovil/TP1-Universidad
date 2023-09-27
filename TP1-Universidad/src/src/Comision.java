@@ -17,7 +17,7 @@ public class Comision {
 		this.materia = materia;
 		this.cicloLectivo = cicloLectivo;
 		this.tipoDeTurno = tipoDeTurno;
-		this.aulaAsignada=null;
+		this.aulaAsignada = null;
 		this.alumnos = new ArrayList<Alumno>();
 		this.docentes = new ArrayList<Docente>();
 	}
@@ -78,6 +78,28 @@ public class Comision {
 		this.aulaAsignada = aulaAsignada;
 	}
 
-	
-	
+	public boolean existeAlumno(Alumno alumnoPrueba) {
+		boolean existe = false;
+		int indice = 0;
+		while (indice < alumnos.size() && !existe) {
+			if (alumnos.get(indice).getDni().equals(alumnoPrueba.getDni())) {
+				existe = true;
+			}
+			indice++;
+		}
+		return existe;
+	}
+
+	public boolean existeDocente(Docente docente) {
+		boolean existe = false;
+		int indice = 0;
+		while (indice < docentes.size() && !existe) {
+			if (docentes.get(indice).getdNIDocente().equals(docente.getdNIDocente())) {
+				existe = true;
+			}
+			indice++;
+		}
+		return existe;
+	}
+
 }

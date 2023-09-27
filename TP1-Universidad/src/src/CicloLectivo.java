@@ -1,12 +1,14 @@
 package src;
 
+import java.util.ArrayList;
+
 public class CicloLectivo {
 
 	private Integer id;
 	private String fechaInicio;
-
 	private String fechaFinalizacion;
 	private String fechaInscripcion;
+	private ArrayList<Comision> comisiones;
 
 	public CicloLectivo(Integer id, String fechaInicio, String fechaFinalizacion, String fechaInscripcion) {
 
@@ -14,6 +16,7 @@ public class CicloLectivo {
 		this.fechaInicio = fechaInicio;
 		this.fechaFinalizacion = fechaFinalizacion;
 		this.fechaInscripcion = fechaInscripcion;
+		this.comisiones = new ArrayList<Comision>();
 	}
 
 	public Integer getId() {
@@ -46,6 +49,14 @@ public class CicloLectivo {
 
 	public void setFechaInscripcion(String fechaInscripcion) {
 		this.fechaInscripcion = fechaInscripcion;
+	}
+
+	public ArrayList<Comision> getComisiones() {
+		return comisiones;
+	}
+
+	public void setComisiones(ArrayList<Comision> comisiones) {
+		this.comisiones = comisiones;
 	}
 
 }

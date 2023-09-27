@@ -1,7 +1,6 @@
 package test;
 
 import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 import src.Alumno;
@@ -10,6 +9,8 @@ import src.CicloLectivo;
 import src.Comision;
 import src.Docente;
 import src.Materia;
+import src.Nota;
+import src.TipoNota;
 import src.Turno;
 import src.Universidad;
 
@@ -266,28 +267,6 @@ public class TestUniversidad {
 	}
 
 	@Test
-	public void queNoSePuedaAsignarAlMismoProfesorEnLaComision() {
-
-		String nombreUni = "Unlam";
-		Universidad unlam = new Universidad(nombreUni);
-
-		Integer id = 1;
-		Materia pb1 = new Materia(1, "pb1");
-		CicloLectivo UnoC2023 = new CicloLectivo(1, "2023-03-04", "2023-07-06", "2023-03-03");
-		Turno TipoDeTurno = Turno.MAÑANA;
-
-		Comision Comision1 = new Comision(id, pb1, UnoC2023, TipoDeTurno);
-		unlam.agregarComision(Comision1);
-		Docente docentePrueba = new Docente(1, "Juan", "Monteagudo", "1983-10-04", "2019-04-01");
-		unlam.registrarDocente(docentePrueba);
-		Docente docentePrueba2 = new Docente(1, "Andy", "Borgeat", "1983-10-04", "2019-04-01");
-		unlam.registrarDocente(docentePrueba2);
-		unlam.asignarDocenteAComision(docentePrueba, Comision1);
-		assertFalse(unlam.asignarDocenteAComision(docentePrueba2, Comision1));
-
-	}
-
-	@Test
 	public void queSePuedaAgregarUnaCorrelativa() {
 		String nombreUni = "Unlam";
 		Universidad unlam = new Universidad(nombreUni);
@@ -323,17 +302,34 @@ public class TestUniversidad {
 
 	}
 
-	@Test  // cambiamos un poco la logica para que se puedan registrar 2 o mas
-	public void queSePuedaRegistrarDosAulasEnLaUniversidad() { 
+	@Test // cambiamos un poco la logica para que se puedan registrar 2 o mas
+	public void queSePuedaRegistrarDosAulasEnLaUniversidad() {
 		String nombreUni = "Unlam";
 		Universidad unlam = new Universidad(nombreUni);
 		Integer numeroAula = 1;
 		Integer numeroAula2 = 2;
-		Aula aula1 = new Aula(numeroAula);
-		Aula aula2 = new Aula(numeroAula2);
+		Integer capacidadMaxima = 50;
+		Aula aula1 = new Aula(numeroAula, capacidadMaxima);
+		Aula aula2 = new Aula(numeroAula2, capacidadMaxima);
 		unlam.registrarAula(aula1);
 		unlam.registrarAula(aula2);
 		Integer valorEsperado = 2;
+		Integer valorObtenido = unlam.getAulas().size();
+		assertEquals(valorEsperado, valorObtenido);
+	}
+
+	@Test
+	public void queNoSePuedaRegistrarDosAulasConMismoNumeroAulaEnLaUniversidad() {
+		String nombreUni = "Unlam";
+		Universidad unlam = new Universidad(nombreUni);
+		Integer numeroAula = 1;
+		Integer numeroAula2 = 1;
+		Integer capacidadMaxima = 50;
+		Aula aula1 = new Aula(numeroAula, capacidadMaxima);
+		Aula aula2 = new Aula(numeroAula2, capacidadMaxima);
+		unlam.registrarAula(aula1);
+		unlam.registrarAula(aula2);
+		Integer valorEsperado = 1;
 		Integer valorObtenido = unlam.getAulas().size();
 		assertEquals(valorEsperado, valorObtenido);
 	}
@@ -353,9 +349,405 @@ public class TestUniversidad {
 		Docente docentePrueba = new Docente(1, "Juan", "Monteagudo", "1983-10-04", "2019-04-01");
 		unlam.registrarDocente(docentePrueba);
 		Integer numeroAula = 1;
-		Aula aula1 = new Aula(numeroAula);
+		Integer capacidadMaxima = 50;
+		Aula aula1 = new Aula(numeroAula, capacidadMaxima);
 		unlam.registrarAula(aula1);
+
 		assertTrue(unlam.asignarAulaAlaComision(comision1, docentePrueba));
+
+	}
+
+	@Test
+	public void queNoSePuedaAsignarUnAulaADosComisionesEnMismoTurnoYCicloLectivo() {
+		String nombreUni = "Unlam";
+		Universidad unlam = new Universidad(nombreUni);
+
+		Integer id = 1;
+		Materia pb1 = new Materia(1, "pb1");
+		CicloLectivo UnoC2023 = new CicloLectivo(1, "2023-03-04", "2023-07-06", "2023-03-03");
+		Turno TipoDeTurno = Turno.MAÑANA;
+
+		Comision comision1 = new Comision(id, pb1, UnoC2023, TipoDeTurno);
+		unlam.agregarComision(comision1);
+		Integer id2 = 2;
+		Materia pb2 = new Materia(2, "pb2");
+		Comision comision2 = new Comision(id2, pb2, UnoC2023, TipoDeTurno);
+		unlam.agregarComision(comision2);
+		Docente docentePrueba = new Docente(1, "Juan", "Monteagudo", "1983-10-04", "2019-04-01");
+		unlam.registrarDocente(docentePrueba);
+		Integer numeroAula = 1;
+		Integer capacidadMaxima = 50;
+		Aula aula1 = new Aula(numeroAula, capacidadMaxima);
+		unlam.registrarAula(aula1);
+		unlam.asignarAulaAlaComision(comision1, docentePrueba);
+		assertFalse(unlam.asignarAulaAlaComision(comision2, docentePrueba));
+
+	}
+
+	@Test
+	public void asignarAlumnoALaComision() {
+		String nombreUni = "Unlam";
+		Universidad unlam = new Universidad(nombreUni);
+
+		Integer id = 1;
+		Materia pb1 = new Materia(1, "pb1");
+		CicloLectivo UnoC2023 = new CicloLectivo(1, "2023-03-04", "2023-07-06", "2023-03-03");
+		Turno TipoDeTurno = Turno.MAÑANA;
+
+		Comision comision1 = new Comision(id, pb1, UnoC2023, TipoDeTurno);
+		unlam.agregarComision(comision1);
+		String nombreAlumno = "Lucho";
+		String apellidoAlumno = "Vilan";
+		String fechaNacimiento = "1995-03-22";
+		String fechaIngreso = "2022-04-01";
+		Integer dni = 39415111;
+		Alumno alumnoPrueba = new Alumno(dni, nombreAlumno, apellidoAlumno, fechaNacimiento, fechaIngreso);
+		unlam.registrarAlumno(alumnoPrueba);
+		Docente docentePrueba = new Docente(1, "Juan", "Monteagudo", "1983-10-04", "2019-04-01");
+		unlam.registrarDocente(docentePrueba);
+		Integer numeroAula = 1;
+		Integer capacidadMaxima = 50;
+		Aula aula1 = new Aula(numeroAula, capacidadMaxima);
+		unlam.registrarAula(aula1);
+		unlam.asignarAulaAlaComision(comision1, docentePrueba);
+		assertTrue(unlam.asignarAlumnoALacomision(comision1, alumnoPrueba));
+
+	}
+
+	@Test
+	public void queNoSePuedaAsignarElMismoAlumnoALaComision() {
+		String nombreUni = "Unlam";
+		Universidad unlam = new Universidad(nombreUni);
+
+		Integer id = 1;
+		Materia pb1 = new Materia(1, "pb1");
+		CicloLectivo UnoC2023 = new CicloLectivo(1, "2023-03-04", "2023-07-06", "2023-03-03");
+		Turno TipoDeTurno = Turno.MAÑANA;
+
+		Comision comision1 = new Comision(id, pb1, UnoC2023, TipoDeTurno);
+		unlam.agregarComision(comision1);
+		String nombreAlumno = "Lucho";
+		String apellidoAlumno = "Vilan";
+		String fechaNacimiento = "1995-03-22";
+		String fechaIngreso = "2022-04-01";
+		Integer dni = 39415111;
+		Alumno alumnoPrueba = new Alumno(dni, nombreAlumno, apellidoAlumno, fechaNacimiento, fechaIngreso);
+		unlam.registrarAlumno(alumnoPrueba);
+		Docente docentePrueba = new Docente(1, "Juan", "Monteagudo", "1983-10-04", "2019-04-01");
+		unlam.registrarDocente(docentePrueba);
+		Integer numeroAula = 1;
+		Integer capacidadMaxima = 50;
+		Aula aula1 = new Aula(numeroAula, capacidadMaxima);
+		unlam.registrarAula(aula1);
+		unlam.asignarAulaAlaComision(comision1, docentePrueba);
+
+		unlam.asignarAlumnoALacomision(comision1, alumnoPrueba);
+
+		assertFalse(unlam.asignarAlumnoALacomision(comision1, alumnoPrueba));
+
+	}
+
+	@Test
+	public void queNoSePuedaAsignarAlMismoProfesorEnLaComision() {
+
+		String nombreUni = "Unlam";
+		Universidad unlam = new Universidad(nombreUni);
+
+		Integer id = 1;
+		Materia pb1 = new Materia(1, "pb1");
+		CicloLectivo UnoC2023 = new CicloLectivo(1, "2023-03-04", "2023-07-06", "2023-03-03");
+		Turno TipoDeTurno = Turno.MAÑANA;
+
+		Comision Comision1 = new Comision(id, pb1, UnoC2023, TipoDeTurno);
+		unlam.agregarComision(Comision1);
+		Docente docentePrueba = new Docente(1, "Juan", "Monteagudo", "1983-10-04", "2019-04-01");
+		unlam.registrarDocente(docentePrueba);
+
+		unlam.asignarDocenteAComision(docentePrueba, Comision1);
+
+		assertFalse(unlam.asignarDocenteAComision(docentePrueba, Comision1));
+
+	}
+
+	@Test
+	public void queElAlumnoSePuedaInscribirEnLaComisionSoloElDiaDeLaInscripcion() {
+		String nombreUni = "Unlam";
+		Universidad unlam = new Universidad(nombreUni);
+
+		Integer id = 1;
+		Materia pb1 = new Materia(1, "pb1");
+		CicloLectivo UnoC2023 = new CicloLectivo(1, "2023-03-04", "2023-07-06", "2023-03-03");
+		Turno TipoDeTurno = Turno.MAÑANA;
+
+		Comision comision1 = new Comision(id, pb1, UnoC2023, TipoDeTurno);
+		unlam.agregarComision(comision1);
+		String nombreAlumno = "Lucho";
+		String apellidoAlumno = "Vilan";
+		String fechaNacimiento = "1995-03-22";
+		String fechaIngreso = "2022-04-01";
+		Integer dni = 39415111;
+		Alumno alumnoPrueba = new Alumno(dni, nombreAlumno, apellidoAlumno, fechaNacimiento, fechaIngreso);
+		unlam.registrarAlumno(alumnoPrueba);
+		Docente docentePrueba = new Docente(1, "Juan", "Monteagudo", "1983-10-04", "2019-04-01");
+		unlam.registrarDocente(docentePrueba);
+		Integer numeroAula = 1;
+		Integer capacidadMaxima = 50;
+		Aula aula1 = new Aula(numeroAula, capacidadMaxima);
+		unlam.registrarAula(aula1);
+		unlam.asignarAulaAlaComision(comision1, docentePrueba);
+
+		assertTrue(unlam.asignarAlumnoALacomision(comision1, alumnoPrueba));
+
+	}
+
+	@Test
+	public void queElAlumnoNoSePuedaInscribirEnLaComisionSiExcedeElCupoLimite() {
+		String nombreUni = "Unlam";
+		Universidad unlam = new Universidad(nombreUni);
+
+		Integer id = 1;
+		Materia pb1 = new Materia(1, "pb1");
+		CicloLectivo UnoC2023 = new CicloLectivo(1, "2023-03-04", "2023-07-06", "2023-03-03");
+		Turno TipoDeTurno = Turno.MAÑANA;
+
+		Comision comision1 = new Comision(id, pb1, UnoC2023, TipoDeTurno);
+		unlam.agregarComision(comision1);
+		String nombreAlumno = "Lucho";
+		String apellidoAlumno = "Vilan";
+		String fechaNacimiento = "1995-03-22";
+		String fechaIngreso = "2022-04-01";
+		Integer dni = 39415111;
+		Alumno alumnoPrueba = new Alumno(dni, nombreAlumno, apellidoAlumno, fechaNacimiento, fechaIngreso);
+		unlam.registrarAlumno(alumnoPrueba);
+		Alumno alumnoPrueba2 = new Alumno(2, nombreAlumno, apellidoAlumno, fechaNacimiento, fechaIngreso);
+		unlam.registrarAlumno(alumnoPrueba2);
+		Alumno alumnoPrueba3 = new Alumno(3, nombreAlumno, apellidoAlumno, fechaNacimiento, fechaIngreso);
+		unlam.registrarAlumno(alumnoPrueba3);
+		Docente docentePrueba = new Docente(1, "Juan", "Monteagudo", "1983-10-04", "2019-04-01");
+		unlam.registrarDocente(docentePrueba);
+		Integer numeroAula = 1;
+		Integer capacidadMaxima = 2;
+		Aula aula1 = new Aula(numeroAula, capacidadMaxima);
+		unlam.registrarAula(aula1);
+		unlam.asignarAulaAlaComision(comision1, docentePrueba);
+
+		unlam.asignarAlumnoALacomision(comision1, alumnoPrueba);
+		unlam.asignarAlumnoALacomision(comision1, alumnoPrueba2);
+		assertFalse(unlam.asignarAlumnoALacomision(comision1, alumnoPrueba3));
+
+	}
+
+	@Test
+	public void registrarNotaValidaEntre1Y10() {
+
+		String nombreUni = "Unlam";
+		Universidad unlam = new Universidad(nombreUni);
+
+		Integer id = 1;
+		Materia pb1 = new Materia(1, "pb1");
+		CicloLectivo UnoC2023 = new CicloLectivo(1, "2023-03-04", "2023-07-06", "2023-03-03");
+		Turno TipoDeTurno = Turno.MAÑANA;
+
+		Comision comision1 = new Comision(id, pb1, UnoC2023, TipoDeTurno);
+		unlam.agregarComision(comision1);
+		String nombreAlumno = "Lucho";
+		String apellidoAlumno = "Vilan";
+		String fechaNacimiento = "1995-03-22";
+		String fechaIngreso = "2022-04-01";
+		Integer dni = 39415111;
+		Alumno alumnoPrueba = new Alumno(dni, nombreAlumno, apellidoAlumno, fechaNacimiento, fechaIngreso);
+
+		Nota nota = new Nota(8, TipoNota.PRIMER_PARCIAL, pb1); // Asegúrate de configurar el tipo correcto aquí
+		boolean resultado = unlam.registrarNota(comision1, alumnoPrueba, nota);
+
+		assertTrue(resultado);
+	}
+
+//	@Test
+//	public void registrarNotaMayorIgualA7SinCorrelativasAprobadas() {
+//	    
+//	    
+//		  String nombreUni = "Unlam";
+//			Universidad unlam = new Universidad(nombreUni);
+//
+//			Integer id = 1;
+//			Materia pb1 = new Materia(1, "pb1");
+//			CicloLectivo UnoC2023 = new CicloLectivo(1, "2023-03-04", "2023-07-06", "2023-03-03");
+//			Turno TipoDeTurno = Turno.MAÑANA;
+//
+//			Comision comision1 = new Comision(id, pb1, UnoC2023, TipoDeTurno);
+//			unlam.agregarComision(comision1);
+//			String nombreAlumno = "Lucho";
+//			String apellidoAlumno = "Vilan";
+//			String fechaNacimiento = "1995-03-22";
+//			String fechaIngreso = "2022-04-01";
+//			Integer dni = 39415111;
+//			Alumno alumnoPrueba = new Alumno(dni, nombreAlumno, apellidoAlumno, fechaNacimiento, fechaIngreso);
+//		 
+//	  
+//	    Nota nota = new Nota(8, TipoNota.PRIMER_PARCIAL, pb1); 
+//	    boolean resultado = unlam.registrarNota(comision1, alumnoPrueba, nota);
+//	    
+//	    
+//	    assertFalse(resultado);
+//	}
+
+	@Test
+	public void alumnoNoPuedeRendirDosRecuperatorios() {
+
+		String nombreUni = "Unlam";
+		Universidad unlam = new Universidad(nombreUni);
+
+		Integer dni = 39415111;
+		String nombreAlumno = "Juan";
+		String apellidoAlumno = "Acunia";
+		String fechaNacimiento = "1995-01-01";
+		String fechaIngreso = "2022-03-01";
+		Alumno alumno = new Alumno(dni, nombreAlumno, apellidoAlumno, fechaNacimiento, fechaIngreso);
+		unlam.rendirRecuperatorio(alumno);
+		assertFalse(unlam.rendirRecuperatorio(alumno));
+	}
+
+	@Test
+	public void cargarNotaFinalConParcialesAprobados() {
+
+		String nombreUni = "Unlam";
+		Universidad unlam = new Universidad(nombreUni);
+
+		Integer id = 1;
+		Materia pb1 = new Materia(id, "PB1");
+		CicloLectivo cicloLectivo = new CicloLectivo(1, "2023-03-04", "2023-07-06", "2023-03-03");
+		Turno turno = Turno.MAÑANA;
+
+		Comision comision1 = new Comision(id, pb1, cicloLectivo, turno);
+		unlam.agregarComision(comision1);
+
+		String nombreAlumno = "Lucho";
+		String apellidoAlumno = "Vilan";
+		String fechaNacimiento = "1995-03-22";
+		String fechaIngreso = "2022-04-01";
+		Integer dni = 39415111;
+		Alumno alumnoPrueba = new Alumno(dni, nombreAlumno, apellidoAlumno, fechaNacimiento, fechaIngreso);
+
+		Nota parcial1 = new Nota(5, TipoNota.PRIMER_PARCIAL, pb1);
+		Nota parcial2 = new Nota(6, TipoNota.SEGUNDO_PARCIAL, pb1);
+		alumnoPrueba.agregarNota(parcial1);
+		alumnoPrueba.agregarNota(parcial2);
+
+		int promedioParciales = alumnoPrueba.calcularPromedioDeNotas();
+		// Configura una nota final
+		Nota notaFinal = new Nota(promedioParciales, TipoNota.FINAL, pb1);
+
+		boolean resultado = unlam.cargarNotaFinal(comision1, alumnoPrueba, notaFinal);
+
+		assertTrue(resultado);
+	}
+
+	@Test
+	public void obtenerNotaExistente() {
+		String nombreUni = "Unlam";
+		Universidad unlam = new Universidad(nombreUni);
+
+		Integer id = 1;
+		Materia pb1 = new Materia(id, "PB1");
+		CicloLectivo cicloLectivo = new CicloLectivo(1, "2023-03-04", "2023-07-06", "2023-03-03");
+		Turno turno = Turno.MAÑANA;
+		unlam.agregarMateria(pb1);
+
+		Comision comision1 = new Comision(id, pb1, cicloLectivo, turno);
+		unlam.agregarComision(comision1);
+
+		String nombreAlumno = "Lucho";
+		String apellidoAlumno = "Vilan";
+		String fechaNacimiento = "1995-03-22";
+		String fechaIngreso = "2022-04-01";
+		Integer dni = 39415111;
+		Alumno alumnoPrueba = new Alumno(dni, nombreAlumno, apellidoAlumno, fechaNacimiento, fechaIngreso);
+		unlam.registrarAlumno(alumnoPrueba);
+
+		Nota parcial1 = new Nota(5, TipoNota.PRIMER_PARCIAL, pb1);
+		unlam.registrarNota(comision1, alumnoPrueba, parcial1);
+
+		Nota notaObtenida = unlam.obtenerNota(alumnoPrueba, pb1);
+		assertEquals(parcial1, notaObtenida);
+
+	}
+
+	@Test
+	public void obtenerMateriasAprobadasParaUnAlumno() {
+
+		String nombreUni = "Unlam";
+		Universidad unlam = new Universidad(nombreUni);
+
+		Integer id = 1;
+		Materia pb1 = new Materia(id, "pb1");
+
+		CicloLectivo cicloLectivo = new CicloLectivo(1, "2023-03-04", "2023-07-06", "2023-03-03");
+		Turno turno = Turno.MAÑANA;
+		unlam.agregarMateria(pb1);
+
+		Comision comision1 = new Comision(id, pb1, cicloLectivo, turno);
+		unlam.agregarComision(comision1);
+
+		String nombreAlumno = "Lucho";
+		String apellidoAlumno = "Vilan";
+		String fechaNacimiento = "1995-03-22";
+		String fechaIngreso = "2022-04-01";
+		Integer dni = 39415111;
+		Alumno alumnoPrueba = new Alumno(dni, nombreAlumno, apellidoAlumno, fechaNacimiento, fechaIngreso);
+		unlam.registrarAlumno(alumnoPrueba);
+
+		Nota parcial1 = new Nota(5, TipoNota.PRIMER_PARCIAL, pb1);
+		Nota parcial2 = new Nota(6, TipoNota.SEGUNDO_PARCIAL, pb1);
+		unlam.registrarNota(comision1, alumnoPrueba, parcial1);
+		unlam.registrarNota(comision1, alumnoPrueba, parcial2);
+		int promedioParciales = alumnoPrueba.calcularPromedioDeNotas();
+		Nota notaFinal = new Nota(promedioParciales, TipoNota.FINAL, pb1);
+
+		unlam.cargarNotaFinal(comision1, alumnoPrueba, notaFinal);
+
+		int valorObtenido = unlam.obtenerMateriasAprobadasParaUnAlumno(alumnoPrueba).size();
+		int valorEsperado = 1;
+
+		assertEquals(valorEsperado, valorObtenido);
+
+	}
+
+	@Test
+	public void obtenerMateriasQueFaltanCursarParaUnAlumno() {
+		String nombreUni = "Unlam";
+		Universidad unlam = new Universidad(nombreUni);
+
+		Integer id = 1;
+		Materia pb1 = new Materia(id, "pb1");
+		Materia pb2 = new Materia(id + 1, "pb2");
+		CicloLectivo cicloLectivo = new CicloLectivo(1, "2023-03-04", "2023-07-06", "2023-03-03");
+		Turno turno = Turno.MAÑANA;
+		unlam.agregarMateria(pb1);
+		unlam.agregarMateria(pb2);
+
+		Comision comision1 = new Comision(id, pb1, cicloLectivo, turno);
+		unlam.agregarComision(comision1);
+
+		String nombreAlumno = "Lucho";
+		String apellidoAlumno = "Vilan";
+		String fechaNacimiento = "1995-03-22";
+		String fechaIngreso = "2022-04-01";
+		Integer dni = 39415111;
+		Alumno alumnoPrueba = new Alumno(dni, nombreAlumno, apellidoAlumno, fechaNacimiento, fechaIngreso);
+		unlam.registrarAlumno(alumnoPrueba);
+
+		Nota parcial1 = new Nota(5, TipoNota.PRIMER_PARCIAL, pb1);
+		Nota parcial2 = new Nota(6, TipoNota.SEGUNDO_PARCIAL, pb1);
+		unlam.registrarNota(comision1, alumnoPrueba, parcial1);
+		unlam.registrarNota(comision1, alumnoPrueba, parcial2);
+		int promedioParciales = alumnoPrueba.calcularPromedioDeNotas();
+		Nota notaFinal = new Nota(promedioParciales, TipoNota.FINAL, pb1);
+		unlam.cargarNotaFinal(comision1, alumnoPrueba, notaFinal);
+
+		int materiasFaltantes = alumnoPrueba.materiasQueFaltanCursar(unlam.getMaterias());
+
+		assertEquals(1, materiasFaltantes);
 
 	}
 
