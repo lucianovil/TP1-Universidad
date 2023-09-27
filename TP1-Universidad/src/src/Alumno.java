@@ -147,9 +147,21 @@ public class Alumno {
 	            return sumaNotas / cantidadNotas;
 	        } else {
 	            return 0; 
+	        }
 	    }
 
-	
+	        public int materiasQueFaltanCursar(ArrayList<Materia> materiasDeLaUniversidad) {
+	            int materiasFaltantes = 0;
+
+	            for (Materia materia : materiasDeLaUniversidad) {
+	                if (!materiasAprobadas.contains(materia)) {
+	                    materiasFaltantes++;
+	                }
+	            }
+
+	            return materiasFaltantes;
+	        
+
 	
 }
 }

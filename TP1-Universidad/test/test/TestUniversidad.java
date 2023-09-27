@@ -649,4 +649,45 @@ public class TestUniversidad {
 
 	       
 	    }
+	    
+	    @Test
+	    public void obtenerMateriasQueFaltanCursarParaUnAlumno() {
+	    	  String nombreUni = "Unlam";
+		        Universidad unlam = new Universidad(nombreUni);
+
+		        Integer id = 1;
+		        Materia pb1 = new Materia(id, "pb1");
+		        Materia pb2 = new Materia (id + 1, "pb2");
+		        CicloLectivo cicloLectivo = new CicloLectivo(1, "2023-03-04", "2023-07-06", "2023-03-03");
+		        Turno turno = Turno.MAÑANA;
+		        unlam.agregarMateria(pb1);
+		        unlam.agregarMateria(pb2);
+
+		        Comision comision1 = new Comision(id, pb1, cicloLectivo, turno);
+		        unlam.agregarComision(comision1);
+
+		        String nombreAlumno = "Lucho";
+		        String apellidoAlumno = "Vilan";
+		        String fechaNacimiento = "1995-03-22";
+		        String fechaIngreso = "2022-04-01";
+		        Integer dni = 39415111;
+		        Alumno alumnoPrueba = new Alumno(dni, nombreAlumno, apellidoAlumno, fechaNacimiento, fechaIngreso);
+		        unlam.registrarAlumno(alumnoPrueba);
+
+		
+		        Nota parcial1 = new Nota(5, TipoNota.PRIMER_PARCIAL, pb1);
+		        Nota parcial2 = new Nota(6, TipoNota.SEGUNDO_PARCIAL, pb1);
+		        unlam.registrarNota(comision1, alumnoPrueba, parcial1);
+		        unlam.registrarNota(comision1, alumnoPrueba, parcial2);
+		        int promedioParciales = alumnoPrueba.calcularPromedioDeNotas();
+		        Nota notaFinal = new Nota(promedioParciales, TipoNota.FINAL,pb1);
+		        unlam.cargarNotaFinal(comision1, alumnoPrueba, notaFinal);
+		       
+		        int materiasFaltantes = alumnoPrueba.materiasQueFaltanCursar(unlam.getMaterias());
+		        
+		    
+		        
+		        assertEquals(1, materiasFaltantes);
+		        
+	    }
 }

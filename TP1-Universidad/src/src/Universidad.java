@@ -415,6 +415,7 @@ boolean sePudoAsignar = false;
 		return null;
 		
 	}
+	 
 	 public ArrayList<Materia> obtenerMateriasAprobadasParaUnAlumno(Alumno alumnoPrueba) {
 		   
 		 ArrayList<Materia> materiasAprobadas = new ArrayList<>();
