@@ -10,7 +10,7 @@ public class Docente {
 
 	public Docente(Integer dNIDocente, String nombreDocente, String apellidoDocente, String fechaNacimiento,
 			String fechaIngreso) {
-		this.dNIDocente =dNIDocente;
+		this.dNIDocente = dNIDocente;
 		this.nombreDocente = nombreDocente;
 		this.apellidoDocente = apellidoDocente;
 		this.fechaNacimiento = fechaNacimiento;
@@ -57,5 +57,4 @@ public class Docente {
 		this.fechaIngreso = fechaIngreso;
 	}
 
-	
 }
